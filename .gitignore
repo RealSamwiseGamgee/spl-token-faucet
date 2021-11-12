@@ -1,0 +1,8 @@
+*.swp
+*.swo
+
+.anchor
+.DS_Store
+target
+**/*.rs.bk
+node_modules
