@@ -17,14 +17,19 @@ pub mod faucet {
     }
 
     pub fn drip(ctx: Context<Drip>) -> ProgramResult {
-        let config = ctx.accounts.config.clone();
-
         let cpi_program = ctx.accounts.token_program.clone();
         let cpi_accounts = token::MintTo {
+            authority: ctx.accounts.token_authority.to_account_info(),
             mint: ctx.accounts.token_mint.to_account_info(),
             to: ctx.accounts.receiver.to_account_info(),
-            authority: ctx.accounts.token_authority.to_account_info(),
         };
+
+        let config = ctx.accounts.config.clone();
+        msg!(
+            "-- publicKey: {}, nonce: {}",
+            config.to_account_info().key,
+            config.nonce
+        );
         let seeds = &[config.to_account_info().key.as_ref(), &[config.nonce]];
         let signer_seeds = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
@@ -62,7 +67,7 @@ pub struct Drip<'info> {
     pub token_authority: AccountInfo<'info>,
 
     #[account(mut)]
-    pub receiver: AccountInfo<'info>,
+    pub receiver: Signer<'info>,
 }
 
 #[account]
