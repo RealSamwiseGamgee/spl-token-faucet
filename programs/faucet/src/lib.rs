@@ -25,11 +25,6 @@ pub mod faucet {
         };
 
         let config = ctx.accounts.config.clone();
-        msg!(
-            "-- publicKey: {}, nonce: {}",
-            config.to_account_info().key,
-            config.nonce
-        );
         let seeds = &[config.to_account_info().key.as_ref(), &[config.nonce]];
         let signer_seeds = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
@@ -62,12 +57,17 @@ pub struct Drip<'info> {
     #[account()]
     pub config: Account<'info, Config>,
 
+    #[account("token_program.key == &token::ID")]
     pub token_program: AccountInfo<'info>,
+
+    #[account(mut, "token_mint.key == &config.token_mint")]
     pub token_mint: AccountInfo<'info>,
+
+    #[account("token_authority.key == &config.token_authority")]
     pub token_authority: AccountInfo<'info>,
 
     #[account(mut)]
-    pub receiver: Signer<'info>,
+    pub receiver: AccountInfo<'info>,
 }
 
 #[account]
