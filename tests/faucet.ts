@@ -20,8 +20,8 @@ describe("faucet", () => {
   const dripVolume = new anchor.BN(10 ** tokenDecimals);
 
   let config: anchor.web3.Keypair;
-  let tokenAuthority: anchor.web3.Keypair;
-  let tokenMint: anchor.web3.Keypair;
+  let tokenAuthority: anchor.web3.PublicKey;
+  let tokenMint: anchor.web3.PublicKey;
   let nonce: number;
 
   before(async () => {
